@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Phone, MapPin, ChevronDown, ChevronUp, MessageCircle, Shield, Star, ArrowLeft, ArrowRight, Menu, X, Camera } from 'lucide-react'
+import { Phone, MapPin, ChevronDown, ChevronUp, MessageCircle, Shield, Star, ArrowLeft, ArrowRight, Menu, X } from 'lucide-react'
 
 interface Product {
   name: string
@@ -204,11 +204,7 @@ export default function JVCelularesPage() {
   }
 
   const handleProductInterest = (productName: string) => {
-    openWhatsApp(`Olá! Tenho interesse no ${productName}.`)
-  }
-
-  const handleProductPhotos = (productName: string) => {
-    openWhatsApp(`Olá! Gostaria de receber fotos do ${productName}.`)
+    openWhatsApp(`Olá, tenho interesse no ${productName}`)
   }
 
   const handleMaintenanceSubmit = (e: React.FormEvent) => {
@@ -284,10 +280,10 @@ export default function JVCelularesPage() {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-6">
-              <a href="#clientes" className="text-gray-700 hover:text-green-600 transition-colors">Clientes</a>
-              <a href="#avaliacoes" className="text-gray-700 hover:text-green-600 transition-colors">Avaliações</a>
               <a href="#produtos" className="text-gray-700 hover:text-green-600 transition-colors">Produtos</a>
               <a href="#manutencao" className="text-gray-700 hover:text-green-600 transition-colors">Manutenção</a>
+              <a href="#avaliacoes" className="text-gray-700 hover:text-green-600 transition-colors">Avaliações</a>
+              <a href="#clientes" className="text-gray-700 hover:text-green-600 transition-colors">Clientes</a>
               <a href="#contato" className="text-gray-700 hover:text-green-600 transition-colors">Contato</a>
             </nav>
 
@@ -315,10 +311,10 @@ export default function JVCelularesPage() {
           {mobileMenuOpen && (
             <div className="md:hidden mt-4 py-4 border-t border-gray-200">
               <nav className="flex flex-col space-y-3">
-                <a href="#clientes" className="text-gray-700 hover:text-green-600 transition-colors py-2">Clientes</a>
-                <a href="#avaliacoes" className="text-gray-700 hover:text-green-600 transition-colors py-2">Avaliações</a>
                 <a href="#produtos" className="text-gray-700 hover:text-green-600 transition-colors py-2">Produtos</a>
                 <a href="#manutencao" className="text-gray-700 hover:text-green-600 transition-colors py-2">Manutenção</a>
+                <a href="#avaliacoes" className="text-gray-700 hover:text-green-600 transition-colors py-2">Avaliações</a>
+                <a href="#clientes" className="text-gray-700 hover:text-green-600 transition-colors py-2">Clientes</a>
                 <a href="#contato" className="text-gray-700 hover:text-green-600 transition-colors py-2">Contato</a>
                 <button
                   onClick={() => openWhatsApp('Olá! Gostaria de mais informações.')}
@@ -363,68 +359,183 @@ export default function JVCelularesPage() {
         </div>
       </section>
 
-      {/* Clients Gallery - PRIMEIRA SEÇÃO */}
-      <section id="clientes" className="py-16 bg-gray-50">
+      {/* Products Section */}
+      <section id="produtos" className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-              ALGUNS DE NOSSOS CLIENTES
+              Nossos Produtos
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Veja a satisfação de quem já confia na JV Celulares
+              Encontre o celular ideal para você com os melhores preços e garantia
             </p>
           </div>
 
-          <div className="relative max-w-4xl mx-auto">
-            <div className="overflow-hidden rounded-2xl shadow-2xl">
-              <div className="relative">
-                <img
-                  src={clientImages[currentImageIndex]}
-                  alt={`Cliente satisfeito ${currentImageIndex + 1}`}
-                  className="w-full h-96 object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                <div className="absolute bottom-4 left-4 right-4">
-                  <div className="bg-yellow-500 text-black px-4 py-2 rounded-lg inline-block font-semibold shadow-lg">
-                    Cliente Satisfeito ⭐⭐⭐⭐⭐
+          {/* Category Filter */}
+          <div className="flex flex-wrap justify-center gap-2 mb-8">
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                  selectedCategory === category
+                    ? 'bg-green-600 text-white shadow-lg'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                {getCategoryIcon(category)} {category}
+              </button>
+            ))}
+          </div>
+
+          {/* Products Grid */}
+          <div className="grid gap-4 md:gap-6">
+            {filteredProducts.map((product, index) => {
+              const productKey = `${product.name}-${product.specs}-${index}`
+              const isExpanded = expandedProduct === productKey
+              
+              return (
+                <div
+                  key={productKey}
+                  className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300"
+                >
+                  <div
+                    className="p-4 cursor-pointer"
+                    onClick={() => setExpandedProduct(isExpanded ? null : productKey)}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <span className="text-2xl">{getCategoryIcon(product.category)}</span>
+                        <div>
+                          <h3 className="font-semibold text-gray-800 text-lg">
+                            {product.name}
+                          </h3>
+                          <p className="text-sm text-gray-500">{product.category}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-green-600 font-bold text-lg">
+                          R$ {product.price}
+                        </span>
+                        {isExpanded ? (
+                          <ChevronUp className="w-5 h-5 text-gray-400" />
+                        ) : (
+                          <ChevronDown className="w-5 h-5 text-gray-400" />
+                        )}
+                      </div>
+                    </div>
                   </div>
+
+                  {isExpanded && (
+                    <div className="px-4 pb-4 border-t border-gray-100">
+                      <div className="pt-4 space-y-4">
+                        <div className="flex items-center space-x-2">
+                          <Shield className="w-4 h-4 text-green-600" />
+                          <span className="text-sm text-gray-600">
+                            Especificações: {product.specs}
+                          </span>
+                        </div>
+                        {product.warranty && (
+                          <div className="flex items-center space-x-2">
+                            <Star className="w-4 h-4 text-yellow-500" />
+                            <span className="text-sm text-gray-600">
+                              {product.warranty}
+                            </span>
+                          </div>
+                        )}
+                        <div className="pt-2">
+                          <button
+                            onClick={() => handleProductInterest(product.name)}
+                            className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-3 px-6 rounded-lg font-semibold transition-all duration-300 hover:scale-105 shadow-lg"
+                          >
+                            <MessageCircle className="w-4 h-4 inline mr-2" />
+                            Tenho Interesse
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
-            </div>
-
-            {/* Navigation Buttons */}
-            <button
-              onClick={prevImage}
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
-            >
-              <ArrowLeft className="w-6 h-6" />
-            </button>
-            <button
-              onClick={nextImage}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
-            >
-              <ArrowRight className="w-6 h-6" />
-            </button>
-
-            {/* Dots Indicator */}
-            <div className="flex justify-center mt-6 space-x-2">
-              {clientImages.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentImageIndex(index)}
-                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                    index === currentImageIndex
-                      ? 'bg-green-600 scale-125'
-                      : 'bg-gray-300 hover:bg-gray-400'
-                  }`}
-                />
-              ))}
-            </div>
+              )
+            })}
           </div>
         </div>
       </section>
 
-      {/* Reviews Section - SEGUNDA SEÇÃO */}
+      {/* Maintenance Section */}
+      <section id="manutencao" className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+              Manutenção de Celular
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Problemas com seu celular? Nossa equipe especializada está pronta para ajudar!
+            </p>
+          </div>
+
+          <div className="max-w-2xl mx-auto">
+            <form onSubmit={handleMaintenanceSubmit} className="bg-white rounded-xl shadow-lg p-6 md:p-8">
+              <div className="space-y-6">
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                    Nome Completo
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    required
+                    value={maintenanceForm.name}
+                    onChange={(e) => setMaintenanceForm({...maintenanceForm, name: e.target.value})}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300"
+                    placeholder="Digite seu nome completo"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="model" className="block text-sm font-medium text-gray-700 mb-2">
+                    Modelo do Celular
+                  </label>
+                  <input
+                    type="text"
+                    id="model"
+                    required
+                    value={maintenanceForm.model}
+                    onChange={(e) => setMaintenanceForm({...maintenanceForm, model: e.target.value})}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300"
+                    placeholder="Ex: iPhone 13, Samsung Galaxy S21, etc."
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="problem" className="block text-sm font-medium text-gray-700 mb-2">
+                    Descrição do Problema
+                  </label>
+                  <textarea
+                    id="problem"
+                    required
+                    rows={4}
+                    value={maintenanceForm.problem}
+                    onChange={(e) => setMaintenanceForm({...maintenanceForm, problem: e.target.value})}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300 resize-none"
+                    placeholder="Descreva detalhadamente o problema do seu celular..."
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-4 px-6 rounded-lg font-semibold text-lg transition-all duration-300 hover:scale-105 shadow-lg"
+                >
+                  <MessageCircle className="w-5 h-5 inline mr-2" />
+                  Solicitar Orçamento via WhatsApp
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      {/* Reviews Section */}
       <section id="avaliacoes" className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -524,185 +635,63 @@ export default function JVCelularesPage() {
         </div>
       </section>
 
-      {/* Products Section - TERCEIRA SEÇÃO */}
-      <section id="produtos" className="py-16 bg-gray-50">
+      {/* Clients Gallery */}
+      <section id="clientes" className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-              Nossos Produtos
+              ALGUNS DE NOSSOS CLIENTES
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Encontre o celular ideal para você com os melhores preços e garantia
+              Veja a satisfação de quem já confia na JV Celulares
             </p>
           </div>
 
-          {/* Category Filter */}
-          <div className="flex flex-wrap justify-center gap-2 mb-8">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                  selectedCategory === category
-                    ? 'bg-green-600 text-white shadow-lg'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                {getCategoryIcon(category)} {category}
-              </button>
-            ))}
-          </div>
-
-          {/* Products Grid */}
-          <div className="grid gap-4 md:gap-6">
-            {filteredProducts.map((product, index) => {
-              const productKey = `${product.name}-${product.specs}-${index}`
-              const isExpanded = expandedProduct === productKey
-              
-              return (
-                <div
-                  key={productKey}
-                  className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300"
-                >
-                  <div
-                    className="p-4 cursor-pointer"
-                    onClick={() => setExpandedProduct(isExpanded ? null : productKey)}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <span className="text-2xl">{getCategoryIcon(product.category)}</span>
-                        <div>
-                          <h3 className="font-semibold text-gray-800 text-lg">
-                            {product.name}
-                          </h3>
-                          <p className="text-sm text-gray-500">{product.category}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-green-600 font-bold text-lg">
-                          R$ {product.price}
-                        </span>
-                        {isExpanded ? (
-                          <ChevronUp className="w-5 h-5 text-gray-400" />
-                        ) : (
-                          <ChevronDown className="w-5 h-5 text-gray-400" />
-                        )}
-                      </div>
-                    </div>
+          <div className="relative max-w-4xl mx-auto">
+            <div className="overflow-hidden rounded-2xl shadow-2xl">
+              <div className="relative">
+                <img
+                  src={clientImages[currentImageIndex]}
+                  alt={`Cliente satisfeito ${currentImageIndex + 1}`}
+                  className="w-full h-96 object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                <div className="absolute bottom-4 left-4 right-4">
+                  <div className="bg-yellow-500 text-black px-4 py-2 rounded-lg inline-block font-semibold shadow-lg">
+                    Cliente Satisfeito ⭐⭐⭐⭐⭐
                   </div>
-
-                  {isExpanded && (
-                    <div className="px-4 pb-4 border-t border-gray-100">
-                      <div className="pt-4 space-y-4">
-                        <div className="flex items-center space-x-2">
-                          <Shield className="w-4 h-4 text-green-600" />
-                          <span className="text-sm text-gray-600">
-                            Especificações: {product.specs}
-                          </span>
-                        </div>
-                        {product.warranty && (
-                          <div className="flex items-center space-x-2">
-                            <Star className="w-4 h-4 text-yellow-500" />
-                            <span className="text-sm text-gray-600">
-                              {product.warranty}
-                            </span>
-                          </div>
-                        )}
-                        <div className="pt-2 space-y-3">
-                          <button
-                            onClick={() => handleProductInterest(product.name)}
-                            className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-3 px-6 rounded-lg font-semibold transition-all duration-300 hover:scale-105 shadow-lg"
-                          >
-                            <MessageCircle className="w-4 h-4 inline mr-2" />
-                            Tenho Interesse
-                          </button>
-                          <button
-                            onClick={() => handleProductPhotos(product.name)}
-                            className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3 px-6 rounded-lg font-semibold transition-all duration-300 hover:scale-105 shadow-lg"
-                          >
-                            <Camera className="w-4 h-4 inline mr-2" />
-                            Pedir Fotos
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
                 </div>
-              )
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Maintenance Section */}
-      <section id="manutencao" className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-              Manutenção de Celular
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Problemas com seu celular? Nossa equipe especializada está pronta para ajudar!
-            </p>
-          </div>
-
-          <div className="max-w-2xl mx-auto">
-            <form onSubmit={handleMaintenanceSubmit} className="bg-white rounded-xl shadow-lg p-6 md:p-8">
-              <div className="space-y-6">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                    Nome Completo
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    required
-                    value={maintenanceForm.name}
-                    onChange={(e) => setMaintenanceForm({...maintenanceForm, name: e.target.value})}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300"
-                    placeholder="Digite seu nome completo"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="model" className="block text-sm font-medium text-gray-700 mb-2">
-                    Modelo do Celular
-                  </label>
-                  <input
-                    type="text"
-                    id="model"
-                    required
-                    value={maintenanceForm.model}
-                    onChange={(e) => setMaintenanceForm({...maintenanceForm, model: e.target.value})}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300"
-                    placeholder="Ex: iPhone 13, Samsung Galaxy S21, etc."
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="problem" className="block text-sm font-medium text-gray-700 mb-2">
-                    Descrição do Problema
-                  </label>
-                  <textarea
-                    id="problem"
-                    required
-                    rows={4}
-                    value={maintenanceForm.problem}
-                    onChange={(e) => setMaintenanceForm({...maintenanceForm, problem: e.target.value})}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300 resize-none"
-                    placeholder="Descreva detalhadamente o problema do seu celular..."
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-4 px-6 rounded-lg font-semibold text-lg transition-all duration-300 hover:scale-105 shadow-lg"
-                >
-                  <MessageCircle className="w-5 h-5 inline mr-2" />
-                  Solicitar Orçamento via WhatsApp
-                </button>
               </div>
-            </form>
+            </div>
+
+            {/* Navigation Buttons */}
+            <button
+              onClick={prevImage}
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
+            >
+              <ArrowLeft className="w-6 h-6" />
+            </button>
+            <button
+              onClick={nextImage}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
+            >
+              <ArrowRight className="w-6 h-6" />
+            </button>
+
+            {/* Dots Indicator */}
+            <div className="flex justify-center mt-6 space-x-2">
+              {clientImages.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentImageIndex(index)}
+                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                    index === currentImageIndex
+                      ? 'bg-green-600 scale-125'
+                      : 'bg-gray-300 hover:bg-gray-400'
+                  }`}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>
