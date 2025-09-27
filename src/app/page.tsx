@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Phone, MapPin, ChevronDown, ChevronUp, MessageCircle, Shield, Star, ArrowLeft, ArrowRight, Menu, X } from 'lucide-react'
+import { Phone, MapPin, ChevronDown, ChevronUp, MessageCircle, Shield, Star, ArrowLeft, ArrowRight, Menu, X, Camera } from 'lucide-react'
 
 interface Product {
   name: string
@@ -9,6 +9,13 @@ interface Product {
   price: string
   category: string
   warranty?: string
+}
+
+interface Review {
+  name: string
+  text: string
+  avatar?: string
+  hasPhoto: boolean
 }
 
 const products: Product[] = [
@@ -106,6 +113,71 @@ const clientImages = [
   "https://k6hrqrxuu8obbfwn.public.blob.vercel-storage.com/temp/10088770-1455-4ade-a838-3000fc901dd0.png",
   "https://k6hrqrxuu8obbfwn.public.blob.vercel-storage.com/temp/f649d843-6cec-4d00-b8db-fe0c05224aa2.png",
   "https://k6hrqrxuu8obbfwn.public.blob.vercel-storage.com/temp/76319b40-96a9-49af-95ee-216b6adf1be6.png",
+  "https://k6hrqrxuu8obbfwn.public.blob.vercel-storage.com/temp/d672813c-8d27-40dc-936d-5d77d295a842.png",
+  "https://k6hrqrxuu8obbfwn.public.blob.vercel-storage.com/temp/338ee6ed-35bb-41a9-9f96-f51fb6411127.png",
+  "https://k6hrqrxuu8obbfwn.public.blob.vercel-storage.com/temp/af15b638-ee8b-43b5-932b-2bee9235f8b0.png",
+  "https://k6hrqrxuu8obbfwn.public.blob.vercel-storage.com/temp/8d93e424-1731-4761-902b-f78098aaebfa.png",
+  "https://k6hrqrxuu8obbfwn.public.blob.vercel-storage.com/temp/a09581b2-27a3-4235-9f9c-16c2d51c2f49.png"
+]
+
+const reviews: Review[] = [
+  {
+    name: "Vanessa Santana",
+    text: "Loja top, vendedor super atencioso e preço que cabe no nosso bolso, vale super a pena comprar.",
+    avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
+    hasPhoto: true
+  },
+  {
+    name: "Jonathan Martins",
+    text: "Caraca Gabriel, novamente eu por aqui, deixei o aparelho cair, mas como já conheço o seu trabalho, obrigado pelo apoio mano, 100% na atenção, valeu mesmo! Trabalho de primeira. Até a próxima.",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+    hasPhoto: true
+  },
+  {
+    name: "Priscilla Araújo",
+    text: "Já sou cliente antiga desde que o JV tinha outra loja. Comprei um iPhone e recebi total assistência. Sempre que preciso de capa, película ou acessórios vou na JV. Atendimento espetacular.",
+    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+    hasPhoto: true
+  },
+  {
+    name: "Gabi Guchilo",
+    text: "Caraca, hoje fui salvo pelo Gabriel. Seu trabalho é incrível, parabéns pelo profissionalismo e qualidade. Recomendo a todos. Agradeço de coração!",
+    hasPhoto: false
+  },
+  {
+    name: "Letícia Barbosa",
+    text: "Ótimo atendimento, loja mil! ✅✅",
+    avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
+    hasPhoto: true
+  },
+  {
+    name: "Camilla Laguna",
+    text: "Ótimos aparelhos e excelente atendimento! Super recomendo!",
+    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face",
+    hasPhoto: true
+  },
+  {
+    name: "Vinicius Prado",
+    text: "Melhor loja do Guarujá.",
+    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+    hasPhoto: true
+  },
+  {
+    name: "Marlon Felipe",
+    text: "Super recomendo, loja de confiança, praticidade nos atendimentos, clima totalmente positivo! Show, recomendo com convicção! 🙌🏽🙏🏽💪🏽😉👍🏽👍🏽",
+    hasPhoto: false
+  },
+  {
+    name: "Thamiris Santos",
+    text: "Loja top, atendimento excelente. Fui super bem atendida.",
+    avatar: "https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=150&h=150&fit=crop&crop=face",
+    hasPhoto: true
+  },
+  {
+    name: "Dayanne Lim",
+    text: "Fui muito bem atendida e trabalho rápido e excelente, nota 10 👏",
+    hasPhoto: false
+  }
 ]
 
 export default function JVCelularesPage() {
@@ -113,6 +185,7 @@ export default function JVCelularesPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('Todos')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [currentReviewIndex, setCurrentReviewIndex] = useState(0)
   const [maintenanceForm, setMaintenanceForm] = useState({
     name: '',
     model: '',
@@ -131,15 +204,16 @@ export default function JVCelularesPage() {
   }
 
   const handleProductInterest = (productName: string) => {
-    openWhatsApp(`Olá, tenho interesse no ${productName}`)
+    openWhatsApp(`Olá! Tenho interesse no ${productName}.`)
+  }
+
+  const handleProductPhotos = (productName: string) => {
+    openWhatsApp(`Olá! Gostaria de receber fotos do ${productName}.`)
   }
 
   const handleMaintenanceSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    const message = `Olá, preciso de manutenção para meu celular:
-Nome: ${maintenanceForm.name}
-Modelo: ${maintenanceForm.model}
-Problema: ${maintenanceForm.problem}`
+    const message = `Olá, preciso de manutenção para meu celular:\nNome: ${maintenanceForm.name}\nModelo: ${maintenanceForm.model}\nProblema: ${maintenanceForm.problem}`
     openWhatsApp(message)
   }
 
@@ -149,6 +223,14 @@ Problema: ${maintenanceForm.problem}`
 
   const prevImage = () => {
     setCurrentImageIndex((prev) => (prev - 1 + clientImages.length) % clientImages.length)
+  }
+
+  const nextReview = () => {
+    setCurrentReviewIndex((prev) => (prev + 1) % reviews.length)
+  }
+
+  const prevReview = () => {
+    setCurrentReviewIndex((prev) => (prev - 1 + reviews.length) % reviews.length)
   }
 
   const getCategoryIcon = (category: string) => {
@@ -168,6 +250,17 @@ Problema: ${maintenanceForm.problem}`
       default:
         return '📱'
     }
+  }
+
+  const getVisibleReviews = () => {
+    const visibleCount = {
+      mobile: 1,
+      tablet: 2,
+      desktop: 3
+    }
+    
+    // Para mobile (padrão)
+    return [reviews[currentReviewIndex]]
   }
 
   return (
@@ -191,9 +284,10 @@ Problema: ${maintenanceForm.problem}`
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-6">
+              <a href="#clientes" className="text-gray-700 hover:text-green-600 transition-colors">Clientes</a>
+              <a href="#avaliacoes" className="text-gray-700 hover:text-green-600 transition-colors">Avaliações</a>
               <a href="#produtos" className="text-gray-700 hover:text-green-600 transition-colors">Produtos</a>
               <a href="#manutencao" className="text-gray-700 hover:text-green-600 transition-colors">Manutenção</a>
-              <a href="#clientes" className="text-gray-700 hover:text-green-600 transition-colors">Clientes</a>
               <a href="#contato" className="text-gray-700 hover:text-green-600 transition-colors">Contato</a>
             </nav>
 
@@ -221,9 +315,10 @@ Problema: ${maintenanceForm.problem}`
           {mobileMenuOpen && (
             <div className="md:hidden mt-4 py-4 border-t border-gray-200">
               <nav className="flex flex-col space-y-3">
+                <a href="#clientes" className="text-gray-700 hover:text-green-600 transition-colors py-2">Clientes</a>
+                <a href="#avaliacoes" className="text-gray-700 hover:text-green-600 transition-colors py-2">Avaliações</a>
                 <a href="#produtos" className="text-gray-700 hover:text-green-600 transition-colors py-2">Produtos</a>
                 <a href="#manutencao" className="text-gray-700 hover:text-green-600 transition-colors py-2">Manutenção</a>
-                <a href="#clientes" className="text-gray-700 hover:text-green-600 transition-colors py-2">Clientes</a>
                 <a href="#contato" className="text-gray-700 hover:text-green-600 transition-colors py-2">Contato</a>
                 <button
                   onClick={() => openWhatsApp('Olá! Gostaria de mais informações.')}
@@ -268,8 +363,169 @@ Problema: ${maintenanceForm.problem}`
         </div>
       </section>
 
-      {/* Products Section */}
-      <section id="produtos" className="py-16 bg-white">
+      {/* Clients Gallery - PRIMEIRA SEÇÃO */}
+      <section id="clientes" className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+              ALGUNS DE NOSSOS CLIENTES
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Veja a satisfação de quem já confia na JV Celulares
+            </p>
+          </div>
+
+          <div className="relative max-w-4xl mx-auto">
+            <div className="overflow-hidden rounded-2xl shadow-2xl">
+              <div className="relative">
+                <img
+                  src={clientImages[currentImageIndex]}
+                  alt={`Cliente satisfeito ${currentImageIndex + 1}`}
+                  className="w-full h-96 object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                <div className="absolute bottom-4 left-4 right-4">
+                  <div className="bg-yellow-500 text-black px-4 py-2 rounded-lg inline-block font-semibold shadow-lg">
+                    Cliente Satisfeito ⭐⭐⭐⭐⭐
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Navigation Buttons */}
+            <button
+              onClick={prevImage}
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
+            >
+              <ArrowLeft className="w-6 h-6" />
+            </button>
+            <button
+              onClick={nextImage}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
+            >
+              <ArrowRight className="w-6 h-6" />
+            </button>
+
+            {/* Dots Indicator */}
+            <div className="flex justify-center mt-6 space-x-2">
+              {clientImages.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentImageIndex(index)}
+                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                    index === currentImageIndex
+                      ? 'bg-green-600 scale-125'
+                      : 'bg-gray-300 hover:bg-gray-400'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Reviews Section - SEGUNDA SEÇÃO */}
+      <section id="avaliacoes" className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+              O QUE NOSSOS CLIENTES DIZEM
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Veja os depoimentos de quem já confia na JV Celulares
+            </p>
+          </div>
+
+          <div className="relative max-w-6xl mx-auto">
+            {/* Reviews Carousel */}
+            <div className="overflow-hidden">
+              <div 
+                className="flex transition-transform duration-500 ease-in-out"
+                style={{ 
+                  transform: `translateX(-${currentReviewIndex * (100 / 1)}%)`,
+                }}
+              >
+                {reviews.map((review, index) => (
+                  <div
+                    key={index}
+                    className="w-full flex-shrink-0 px-2 md:w-1/2 lg:w-1/3"
+                  >
+                    <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 border border-gray-100 h-full">
+                      {/* Header with avatar and name */}
+                      <div className="flex items-center mb-4">
+                        {review.hasPhoto && review.avatar ? (
+                          <img
+                            src={review.avatar}
+                            alt={review.name}
+                            className="w-12 h-12 rounded-full object-cover border-2 border-green-200"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 rounded-full bg-gradient-to-r from-green-400 to-green-600 flex items-center justify-center text-white font-bold text-lg">
+                            {review.name.charAt(0)}
+                          </div>
+                        )}
+                        <div className="ml-3">
+                          <h3 className="font-bold text-gray-800 text-lg">{review.name}</h3>
+                          <div className="flex text-yellow-400 text-sm">
+                            {'★'.repeat(5)}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Review text */}
+                      <div className="text-gray-700 leading-relaxed">
+                        <p className="italic">"{review.text}"</p>
+                      </div>
+
+                      {/* Google-like styling */}
+                      <div className="mt-4 pt-4 border-t border-gray-100">
+                        <div className="flex items-center justify-between text-xs text-gray-500">
+                          <span>Avaliação do Google</span>
+                          <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium">
+                            Verificada
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Navigation Buttons */}
+            <button
+              onClick={prevReview}
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-10"
+            >
+              <ArrowLeft className="w-6 h-6" />
+            </button>
+            <button
+              onClick={nextReview}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-10"
+            >
+              <ArrowRight className="w-6 h-6" />
+            </button>
+
+            {/* Dots Indicator */}
+            <div className="flex justify-center mt-8 space-x-2">
+              {reviews.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentReviewIndex(index)}
+                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                    index === currentReviewIndex
+                      ? 'bg-green-600 scale-125'
+                      : 'bg-gray-300 hover:bg-gray-400'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Products Section - TERCEIRA SEÇÃO */}
+      <section id="produtos" className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
@@ -337,7 +593,7 @@ Problema: ${maintenanceForm.problem}`
 
                   {isExpanded && (
                     <div className="px-4 pb-4 border-t border-gray-100">
-                      <div className="pt-4 space-y-3">
+                      <div className="pt-4 space-y-4">
                         <div className="flex items-center space-x-2">
                           <Shield className="w-4 h-4 text-green-600" />
                           <span className="text-sm text-gray-600">
@@ -352,13 +608,20 @@ Problema: ${maintenanceForm.problem}`
                             </span>
                           </div>
                         )}
-                        <div className="pt-2">
+                        <div className="pt-2 space-y-3">
                           <button
                             onClick={() => handleProductInterest(product.name)}
                             className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-3 px-6 rounded-lg font-semibold transition-all duration-300 hover:scale-105 shadow-lg"
                           >
                             <MessageCircle className="w-4 h-4 inline mr-2" />
                             Tenho Interesse
+                          </button>
+                          <button
+                            onClick={() => handleProductPhotos(product.name)}
+                            className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3 px-6 rounded-lg font-semibold transition-all duration-300 hover:scale-105 shadow-lg"
+                          >
+                            <Camera className="w-4 h-4 inline mr-2" />
+                            Pedir Fotos
                           </button>
                         </div>
                       </div>
@@ -372,7 +635,7 @@ Problema: ${maintenanceForm.problem}`
       </section>
 
       {/* Maintenance Section */}
-      <section id="manutencao" className="py-16 bg-gray-50">
+      <section id="manutencao" className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
@@ -440,67 +703,6 @@ Problema: ${maintenanceForm.problem}`
                 </button>
               </div>
             </form>
-          </div>
-        </div>
-      </section>
-
-      {/* Clients Gallery */}
-      <section id="clientes" className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-              ALGUNS DE NOSSOS CLIENTES
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Veja a satisfação de quem já confia na JV Celulares
-            </p>
-          </div>
-
-          <div className="relative max-w-4xl mx-auto">
-            <div className="overflow-hidden rounded-2xl shadow-2xl">
-              <div className="relative">
-                <img
-                  src={clientImages[currentImageIndex]}
-                  alt={`Cliente satisfeito ${currentImageIndex + 1}`}
-                  className="w-full h-96 object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                <div className="absolute bottom-4 left-4 right-4">
-                  <div className="bg-yellow-500 text-black px-4 py-2 rounded-lg inline-block font-semibold shadow-lg">
-                    Cliente Satisfeito ⭐⭐⭐⭐⭐
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Navigation Buttons */}
-            <button
-              onClick={prevImage}
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
-            >
-              <ArrowLeft className="w-6 h-6" />
-            </button>
-            <button
-              onClick={nextImage}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
-            >
-              <ArrowRight className="w-6 h-6" />
-            </button>
-
-            {/* Dots Indicator */}
-            <div className="flex justify-center mt-6 space-x-2">
-              {clientImages.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentImageIndex(index)}
-                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                    index === currentImageIndex
-                      ? 'bg-green-600 scale-125'
-                      : 'bg-gray-300 hover:bg-gray-400'
-                  }`}
-                />
-              ))}
-            </div>
           </div>
         </div>
       </section>
