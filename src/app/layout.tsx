@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Criado com a Lasy",
-  description: "Projeto criado com Lasy AI",
+  title: "JV Celulares e Acessórios - Guarujá",
+  description: "A sua loja de confiança no Guarujá para celulares, acessórios e manutenção. Melhores preços e atendimento especializado.",
 };
 
 export default function RootLayout({
