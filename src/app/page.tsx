@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Phone, MapPin, ChevronDown, ChevronUp, MessageCircle, Shield, Star, ArrowLeft, ArrowRight, Menu, X, Camera } from 'lucide-react'
 
 interface Product {
@@ -217,6 +217,7 @@ export default function JVCelularesPage() {
     openWhatsApp(message)
   }
 
+  // Carrossel de Fotos dos Clientes
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % clientImages.length)
   }
@@ -225,6 +226,7 @@ export default function JVCelularesPage() {
     setCurrentImageIndex((prev) => (prev - 1 + clientImages.length) % clientImages.length)
   }
 
+  // Carrossel de Avaliações dos Clientes
   const nextReview = () => {
     setCurrentReviewIndex((prev) => (prev + 1) % reviews.length)
   }
@@ -232,6 +234,17 @@ export default function JVCelularesPage() {
   const prevReview = () => {
     setCurrentReviewIndex((prev) => (prev - 1 + reviews.length) % reviews.length)
   }
+
+  // Auto-play para carrosséis
+  useEffect(() => {
+    const imageInterval = setInterval(nextImage, 5000)
+    const reviewInterval = setInterval(nextReview, 7000)
+    
+    return () => {
+      clearInterval(imageInterval)
+      clearInterval(reviewInterval)
+    }
+  }, [])
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
@@ -252,17 +265,6 @@ export default function JVCelularesPage() {
     }
   }
 
-  const getVisibleReviews = () => {
-    const visibleCount = {
-      mobile: 1,
-      tablet: 2,
-      desktop: 3
-    }
-    
-    // Para mobile (padrão)
-    return [reviews[currentReviewIndex]]
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Header */}
@@ -272,7 +274,7 @@ export default function JVCelularesPage() {
             {/* Logo */}
             <div className="flex items-center space-x-3">
               <img 
-                src="https://k6hrqrxuu8obbfwn.public.blob.vercel-storage.com/temp/c9a61cfa-70ed-4a5c-af52-6de8470d803b.jpg" 
+                src="https://k6hrqrxuu8obbfwn.public.blob.vercel-storage.com/temp/aacf6719-a90b-4a61-bd34-191d5d69ab0a.jpg" 
                 alt="JV Celulares e Acessórios" 
                 className="h-12 w-12 rounded-lg shadow-md"
               />
@@ -333,37 +335,17 @@ export default function JVCelularesPage() {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-green-600 to-green-800 text-white py-16 relative overflow-hidden">
-        <div className="absolute inset-0 bg-black/20"></div>
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-3xl md:text-5xl font-bold mb-6 leading-tight">
-              JV CELULARES E ACESSÓRIOS
-            </h1>
-            <p className="text-xl md:text-2xl mb-8 text-green-100">
-              A sua loja de confiança no Guarujá
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button
-                onClick={() => openWhatsApp('Olá! Gostaria de ver os produtos disponíveis.')}
-                className="bg-yellow-500 hover:bg-yellow-600 text-black px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 hover:scale-105 shadow-lg"
-              >
-                Ver Produtos
-              </button>
-              <button
-                onClick={() => window.open('https://maps.google.com/?q=JV+Celulares+Guarujá', '_blank')}
-                className="bg-white/20 hover:bg-white/30 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 hover:scale-105 backdrop-blur-sm border border-white/30"
-              >
-                <MapPin className="w-5 h-5 inline mr-2" />
-                Localização
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* Banner Principal - Topo da Página */}
+      <section className="w-full">
+        <img
+          src="https://k6hrqrxuu8obbfwn.public.blob.vercel-storage.com/temp/2942971e-1f6a-4fad-82f7-3ec6b94a5edd.png"
+          alt="Banner de promoção - R$100 OFF HOJE!"
+          className="w-full h-auto"
+          style={{ width: '100%', height: 'auto' }}
+        />
       </section>
 
-      {/* Clients Gallery - PRIMEIRA SEÇÃO */}
+      {/* Seção de Fotos dos Clientes - Carrossel */}
       <section id="clientes" className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -375,56 +357,55 @@ export default function JVCelularesPage() {
             </p>
           </div>
 
-          <div className="relative max-w-4xl mx-auto">
-            <div className="overflow-hidden rounded-2xl shadow-2xl">
-              <div className="relative">
-                <img
-                  src={clientImages[currentImageIndex]}
-                  alt={`Cliente satisfeito ${currentImageIndex + 1}`}
-                  className="w-full h-96 object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                <div className="absolute bottom-4 left-4 right-4">
-                  <div className="bg-yellow-500 text-black px-4 py-2 rounded-lg inline-block font-semibold shadow-lg">
-                    Cliente Satisfeito ⭐⭐⭐⭐⭐
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Navigation Buttons */}
-            <button
-              onClick={prevImage}
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
-            >
-              <ArrowLeft className="w-6 h-6" />
-            </button>
-            <button
-              onClick={nextImage}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
-            >
-              <ArrowRight className="w-6 h-6" />
-            </button>
-
-            {/* Dots Indicator */}
-            <div className="flex justify-center mt-6 space-x-2">
-              {clientImages.map((_, index) => (
-                <button
+          {/* Carrossel de Fotos dos Clientes */}
+          <div className="carrossel-fotos">
+            <div className="carousel-container relative w-full max-w-4xl mx-auto overflow-hidden rounded-2xl shadow-lg">
+              {clientImages.map((image, index) => (
+                <div
                   key={index}
-                  onClick={() => setCurrentImageIndex(index)}
-                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                    index === currentImageIndex
-                      ? 'bg-green-600 scale-125'
-                      : 'bg-gray-300 hover:bg-gray-400'
-                  }`}
-                />
+                  className={`carousel-item ${index === currentImageIndex ? 'block' : 'hidden'} w-full`}
+                >
+                  <img
+                    src={image}
+                    alt={`Foto do cliente ${index + 1}`}
+                    className="w-full h-auto"
+                    style={{ width: '100%', height: 'auto' }}
+                  />
+                </div>
               ))}
+
+              {/* Botões de Navegação */}
+              <button
+                onClick={prevImage}
+                className="prev absolute top-1/2 left-4 transform -translate-y-1/2 text-white text-2xl p-4 bg-black bg-opacity-50 hover:bg-opacity-70 border-none cursor-pointer rounded-full transition-all duration-300"
+              >
+                &#10094;
+              </button>
+              <button
+                onClick={nextImage}
+                className="next absolute top-1/2 right-4 transform -translate-y-1/2 text-white text-2xl p-4 bg-black bg-opacity-50 hover:bg-opacity-70 border-none cursor-pointer rounded-full transition-all duration-300"
+              >
+                &#10095;
+              </button>
+
+              {/* Indicadores */}
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                {clientImages.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentImageIndex(index)}
+                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                      index === currentImageIndex ? 'bg-white' : 'bg-white bg-opacity-50'
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Reviews Section - SEGUNDA SEÇÃO */}
+      {/* Seção de Avaliações dos Clientes - Carrossel */}
       <section id="avaliacoes" className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -436,95 +417,86 @@ export default function JVCelularesPage() {
             </p>
           </div>
 
-          <div className="relative max-w-6xl mx-auto">
-            {/* Reviews Carousel */}
-            <div className="overflow-hidden">
-              <div 
-                className="flex transition-transform duration-500 ease-in-out"
-                style={{ 
-                  transform: `translateX(-${currentReviewIndex * (100 / 1)}%)`,
-                }}
-              >
-                {reviews.map((review, index) => (
-                  <div
-                    key={index}
-                    className="w-full flex-shrink-0 px-2 md:w-1/2 lg:w-1/3"
-                  >
-                    <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 border border-gray-100 h-full">
-                      {/* Header with avatar and name */}
-                      <div className="flex items-center mb-4">
-                        {review.hasPhoto && review.avatar ? (
-                          <img
-                            src={review.avatar}
-                            alt={review.name}
-                            className="w-12 h-12 rounded-full object-cover border-2 border-green-200"
-                          />
-                        ) : (
-                          <div className="w-12 h-12 rounded-full bg-gradient-to-r from-green-400 to-green-600 flex items-center justify-center text-white font-bold text-lg">
-                            {review.name.charAt(0)}
-                          </div>
-                        )}
-                        <div className="ml-3">
-                          <h3 className="font-bold text-gray-800 text-lg">{review.name}</h3>
-                          <div className="flex text-yellow-400 text-sm">
-                            {'★'.repeat(5)}
-                          </div>
+          {/* Carrossel de Avaliações dos Clientes */}
+          <div className="carrossel-avaliacoes">
+            <div className="carousel-container relative w-full max-w-4xl mx-auto overflow-hidden">
+              {reviews.map((review, index) => (
+                <div
+                  key={index}
+                  className={`carousel-item ${index === currentReviewIndex ? 'block' : 'hidden'} text-center p-8`}
+                >
+                  <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg p-8 border border-gray-100 max-w-2xl mx-auto">
+                    {/* Header with avatar and name */}
+                    <div className="flex items-center justify-center mb-6">
+                      {review.hasPhoto && review.avatar ? (
+                        <img
+                          src={review.avatar}
+                          alt={review.name}
+                          className="w-16 h-16 rounded-full object-cover border-2 border-green-200 mr-4"
+                        />
+                      ) : (
+                        <div className="w-16 h-16 rounded-full bg-gradient-to-r from-green-400 to-green-600 flex items-center justify-center text-white font-bold text-xl mr-4">
+                          {review.name.charAt(0)}
                         </div>
-                      </div>
-
-                      {/* Review text */}
-                      <div className="text-gray-700 leading-relaxed">
-                        <p className="italic">"{review.text}"</p>
-                      </div>
-
-                      {/* Google-like styling */}
-                      <div className="mt-4 pt-4 border-t border-gray-100">
-                        <div className="flex items-center justify-between text-xs text-gray-500">
-                          <span>Avaliação do Google</span>
-                          <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium">
-                            Verificada
-                          </span>
+                      )}
+                      <div>
+                        <h3 className="font-bold text-gray-800 text-xl">{review.name}</h3>
+                        <div className="flex text-yellow-400 text-lg justify-center">
+                          {'★'.repeat(5)}
                         </div>
                       </div>
                     </div>
+
+                    {/* Review text */}
+                    <div className="text-gray-700 leading-relaxed mb-6 text-lg">
+                      <p className="italic">"{review.text}"</p>
+                    </div>
+
+                    {/* Google-like styling */}
+                    <div className="pt-4 border-t border-gray-100">
+                      <div className="flex items-center justify-center text-sm text-gray-500">
+                        <span className="mr-4">Avaliação do Google</span>
+                        <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full font-medium">
+                          Verificada
+                        </span>
+                      </div>
+                    </div>
                   </div>
+                </div>
+              ))}
+
+              {/* Botões de Navegação */}
+              <button
+                onClick={prevReview}
+                className="prev absolute top-1/2 left-4 transform -translate-y-1/2 text-white text-2xl p-4 bg-black bg-opacity-50 hover:bg-opacity-70 border-none cursor-pointer rounded-full transition-all duration-300"
+              >
+                &#10094;
+              </button>
+              <button
+                onClick={nextReview}
+                className="next absolute top-1/2 right-4 transform -translate-y-1/2 text-white text-2xl p-4 bg-black bg-opacity-50 hover:bg-opacity-70 border-none cursor-pointer rounded-full transition-all duration-300"
+              >
+                &#10095;
+              </button>
+
+              {/* Indicadores */}
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                {reviews.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentReviewIndex(index)}
+                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                      index === currentReviewIndex ? 'bg-green-600' : 'bg-gray-300'
+                    }`}
+                  />
                 ))}
               </div>
-            </div>
-
-            {/* Navigation Buttons */}
-            <button
-              onClick={prevReview}
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-10"
-            >
-              <ArrowLeft className="w-6 h-6" />
-            </button>
-            <button
-              onClick={nextReview}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-10"
-            >
-              <ArrowRight className="w-6 h-6" />
-            </button>
-
-            {/* Dots Indicator */}
-            <div className="flex justify-center mt-8 space-x-2">
-              {reviews.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentReviewIndex(index)}
-                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                    index === currentReviewIndex
-                      ? 'bg-green-600 scale-125'
-                      : 'bg-gray-300 hover:bg-gray-400'
-                  }`}
-                />
-              ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Products Section - TERCEIRA SEÇÃO */}
+      {/* Products Section */}
       <section id="produtos" className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -767,7 +739,7 @@ export default function JVCelularesPage() {
           <div className="flex flex-col md:flex-row items-center justify-between">
             <div className="flex items-center space-x-3 mb-4 md:mb-0">
               <img 
-                src="https://k6hrqrxuu8obbfwn.public.blob.vercel-storage.com/temp/c9a61cfa-70ed-4a5c-af52-6de8470d803b.jpg" 
+                src="https://k6hrqrxuu8obbfwn.public.blob.vercel-storage.com/temp/aacf6719-a90b-4a61-bd34-191d5d69ab0a.jpg" 
                 alt="JV Celulares e Acessórios" 
                 className="h-10 w-10 rounded-lg"
               />
